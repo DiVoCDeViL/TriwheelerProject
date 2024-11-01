@@ -18,7 +18,7 @@ Vo = Vl * (1 + (w * np.tan(q_rad)) / (2 * L))
 plt.figure(figsize=(12, 6))
 
 plt.subplot(1, 2, 1)
-plt.plot(q, Vi, label='Vi')
+plt.plot(q, Vi, label='Vl')
 plt.xlabel('q (degrees)')
 plt.ylabel('Vi')
 plt.title('q vs Vi')
@@ -26,7 +26,7 @@ plt.grid(True)
 
 # Plot q vs Vo
 plt.subplot(1, 2, 2)
-plt.plot(q, Vo, label='Vo')
+plt.plot(q, Vo, label='Vr')
 plt.xlabel('q (degrees)')
 plt.ylabel('Vo')
 plt.title('q vs Vo')
