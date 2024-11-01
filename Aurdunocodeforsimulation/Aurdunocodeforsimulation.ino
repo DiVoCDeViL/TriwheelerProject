@@ -14,10 +14,16 @@ int V  = 40; //current speed of the vehicle
 int R; //for converting to v
 int vRight; // velocity of right tyre
 int vLeft; // velocity of left tyre
+int ENAInput;// input to ENA for speed controll
+int ENBInput;// same as above
+int vLow;// constraints to velocity
+int vHigh; // constraints to velocity
 
 int potValue;
 int theta;
-
+float degreesToRadians(float degrees) {
+    return degrees * (PI / 180.0);
+}
 void setup() {
   Serial.begin(9600);
   pinMode(IN1, OUTPUT);
@@ -38,15 +44,23 @@ void loop() {
   potValue = analogRead(A1);
   theta = map(potValue,0,1023,-45,45);
   R = L/tan(theta);
-  vRight = V/R*(L/tan(theta) - W/2);
-  vLeft = V/R*(L/tan(theta) + W/2);
+  //vRight = V/R*(L/tan(degreesToRadians(theta)) - W/2);
+  vRight = V * (1 - (W * tan(degreesToRadians(theta))) / (2 * L));
+  vLeft = V * (1 + (W * tan(degreesToRadians(theta))) / (2 * L));
 
-  Serial.print("Vr = ");
-  Serial.print(vRight);
-  Serial.print("   ");
   Serial.print("Vl = ");
-  Serial.println(vLeft);
-  Serial.print("steering Angle = ");
-  Serial.println(theta);
-  delay(100);
+  Serial.print(vLeft);
+  Serial.print("   ");
+  Serial.print("Vr = ");
+  Serial.println(vRight);
+  //Serial.print("steering Angle = ");
+  //Serial.println(theta);
+  //delay(500);
+  vLow = V * (1 - (W * tan(degreesToRadians(45))) / (2 * L));
+  vHigh = V * (1 + (W * tan(degreesToRadians(45))) / (2 * L));
+  ENAInput = map(vRight, vLow, vHigh, 0, 254);// speed will vary from v-x to v+x 
+  ENBInput = map(vLeft, vLow, vHigh, 0, 254);
+  analogWrite(ENA, ENAInput);
+  analogWrite(ENB, ENBInput);
+  //Serial.println(tan(degreesToRadians(45)));
 }
